@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  # 1️⃣ Controllo su PR verso main
+  pull_request:
+    branches:
+      - main
+  # 2️⃣ Deploy su merge su main
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('PY/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r PY/requirements.txt
+
+      - name: Lint code
+        run: |
+          pip install flake8
+          flake8 PY/
+
+      - name: Run tests
+        run: |
+          pip install pytest
+          pytest PY/
+
+      - name: Build Docker image
+        run: |
+          docker build -t myfirstapp .
+
+  docker-deploy:
+    name: Deploy Docker Image
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myfirstapp:latest .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myfirstapp:latest
