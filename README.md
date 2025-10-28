@@ -1,4 +1,4 @@
-# MyFirstApp - Docker Setup
+# MyFirsDockertApp - Docker Setup
 
 Questo progetto mostra come creare e distribuire un'app Python utilizzando Docker.  
 Contiene un esempio minimale con `src/runMain.py` che stampa `"Hello, world!"`.
@@ -10,7 +10,7 @@ Contiene un esempio minimale con `src/runMain.py` che stampa `"Hello, world!"`.
 
 Ecco come è organizzato il progetto:
 ```
-myFirstApp/
+myFirstDockerApp/
 ├── .git/
 ├── .gitignore
 ├── Dockerfile
