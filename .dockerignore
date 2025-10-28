@@ -1,0 +1,36 @@
+# Ignora la cartella git
+.git
+.gitignore
+
+# Cache e compilati Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py~ 
+*.egg-info/
+*.egg
+
+# Virtual environments
+PY/myvenv/
+.env/
+.envrc
+*.env
+
+# Output temporanei e di build
+build/
+dist/
+*.log
+
+# File di sistema
+.DS_Store
+Thumbs.db
+
+# Escludi eventuali file locali non necessari
+*.sqlite3
+*.db
+*.bak
+
+# Se hai grandi dataset locali che non vuoi copiare
+data/
+datasets/
