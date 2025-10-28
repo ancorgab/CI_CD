@@ -64,9 +64,10 @@ jobs:
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myfirstapp:latest .
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myfirstapp:latest
+          IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/myfirstapp
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.sha }} .
+          docker push $IMAGE_NAME --all-tags
